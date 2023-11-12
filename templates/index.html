@@ -1,12 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Web-Dice-Game</title>
-</head>
-<body>
-    <!--Introduction to the page -->
-    <h2>Welcome to Web-Dice-Game !</h2>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %} Home {% endblock %}
+
+{% block description %}
+
+<div class="rules">
+    <h4>Rules to play dice games:</h4>
+    <ol>
+        <li>Select a number to play.</li>
+        <li>Click 'play' button to roll a dice.</li>
+    </ol>
+</div>
+<br>
+
+
+<div class="game_screen">
+    <form method="post">
+        <h4>Select the number of turns to play</h4>
+            <input class="play_num" name="play_num" type="radio" value="1"> 1 Game
+            <input class="play_num" name="play_num" type="radio" value="2"> 2 Game
+            <input class="play_num" name="play_num" type="radio" value="3"> 3 Game
+        <div> <img src="{{ url_for('static',filename='images/dice.png') }}"
+                 width="100px" height="100px"> </div>
+
+        <input type="submit" name="Play" value="Play Game !">
+
+    </form>
+</div>
+
+
+{% endblock %}

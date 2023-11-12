@@ -1,11 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Play Game !</title>
-</head>
-<body>
-    <h2>Play Game !</h2>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %} Play Game ! {% endblock %}
+
+{% block description %}
+
+<ul>
+    {% for num in range(plays) %}
+    <li> Play-{{ num + 1 }} : {{ dice_num[num] }}</li>
+    {% endfor %}
+</ul>
+
+<h4>* Sum: {{ sum }}</h4>
+
+<form method="post">
+    <label for="user_name">User Name: </label>
+    <input type="text" id="user_name">
+    <input type="submit" value="submit">
+</form>
+
+{% endblock %}

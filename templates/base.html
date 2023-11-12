@@ -2,9 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block title %} <Title Here> {% endblock %}</title>
 </head>
 <body>
+    <div class="head_line">
+        <hr class="deco_line">
+        <h2>Web-Dice-Game Page</h2>
+        <hr class="deco_line">
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+        <hr>
+        <ul> <li> {{ message }} </li> </ul>
+        <hr>
+    {% endfor %}
+    {% endwith %}
+
+
+    {% block description %}
+    {% endblock %}
+
+
+
 
 </body>
 </html>
