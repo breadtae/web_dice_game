@@ -17,13 +17,15 @@
 <div class="game_screen">
     <form method="post">
         <h4>Select the number of turns to play</h4>
-            <input class="play_num" name="play_num" type="radio" value="1"> 1 Game
-            <input class="play_num" name="play_num" type="radio" value="2"> 2 Game
-            <input class="play_num" name="play_num" type="radio" value="3"> 3 Game
+            <div class="play_num">
+                <input name="play_num" type="radio" value="1"> 1 Game
+                <input name="play_num" type="radio" value="2"> 2 Game
+                <input name="play_num" type="radio" value="3"> 3 Game
+            </div>
         <div> <img src="{{ url_for('static',filename='images/dice.png') }}"
                  width="100px" height="100px"> </div>
 
-        <input type="submit" name="Play" value="Play Game !">
+        <input type="submit" name="play_game" value="Play Game !">
 
     </form>
 </div>
