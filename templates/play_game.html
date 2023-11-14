@@ -4,11 +4,26 @@
 
 {% block description %}
 
-<ul>
+<div class="dice_img"> <ul>
     {% for num in range(plays) %}
-    <li> Play-{{ num + 1 }} : {{ dice_num[num] }}</li>
+    <li>
+        Play {{ num + 1 }} : <br>
+        {% if dice_num[num] == 1 %}
+            <img src="{{url_for('static', filename='images/dice_1.jpg')}}">
+        {% elif dice_num[num] == 2 %}
+            <img src="{{url_for('static', filename='images/dice_2.jpg')}}">
+        {% elif dice_num[num] == 3 %}
+            <img src="{{url_for('static', filename='images/dice_3.jpg')}}">
+        {% elif dice_num[num] == 4 %}
+            <img src="{{url_for('static', filename='images/dice_4.jpg')}}">
+        {% elif dice_num[num] == 5 %}
+            <img src="{{url_for('static', filename='images/dice_5.jpg')}}">
+        {% elif dice_num[num] == 6 %}
+            <img src="{{url_for('static', filename='images/dice_6.jpg')}}">
+        {% endif %}
+    </li>
     {% endfor %}
-</ul>
+</ul></div>
 
 <h4>* Sum: {{ sum }}</h4>
 
