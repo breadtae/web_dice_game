@@ -18,11 +18,11 @@
     <form method="post">
         <h4>Select the number of turns to play</h4>
             <div class="play_num">
-                <input name="play_num" type="radio" value="1"> 1 Game
-                <input name="play_num" type="radio" value="2"> 2 Game
-                <input name="play_num" type="radio" value="3"> 3 Game
+                <input name="play_num" type="radio" value="1"> Single
+                <input name="play_num" type="radio" value="2"> Double
+                <input name="play_num" type="radio" value="3"> Triple
             </div>
-        <div> <img src="{{ url_for('static',filename='images/dice.png') }}"
+        <div class="dice_img"> <img src="{{ url_for('static',filename='images/dice.png') }}"
                  width="100px" height="100px"> </div>
 
         <input type="submit" name="play_game" value="Play Game !">
