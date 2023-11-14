@@ -13,9 +13,19 @@ app.debug = True
 
 def reset_session():
     session.clear()
-    print("[Clear Session]")
+    session['re_user_name'] = False
+    session['play_num'] = 0
+    session['dice_num'] = []
+    session['dice_sum'] = 0
+    session['user_name'] = 'default'
+    print("[Cleared Session]")
 
-# Home page to show Game Entry
+
+def login_required():
+    pass
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     """
@@ -25,45 +35,55 @@ def home():
     :return:
     """
     reset_session()
-    flash(f"[Session] {session}")
-
     if request.method == 'POST':
         if 'play_game' in request.form:  # Select play_num from web
-            play_num = request.form.get('play_num')
-            session['play_num'] = play_num
-            print(f"[RECEIVED] Play_num : {play_num}")
-            return redirect(url_for('start_game', play_num=play_num))
+            play_num = request.form.get('play_num', 'None')
+            print(f"[play_num] {play_num}, [Type] {type(play_num)}")
+            if play_num in ['1', '2', '3']:
+                play_num = int(play_num)
+                session['play_num'] = play_num  # Register play_num in session
+                print(f"[Session] : {session}")
+                return redirect(url_for('start_game', play_num=play_num))
+            else:
+                flash("[ERROR] Select valid 'Play num' !")
 
     return render_template('index.html')
 
 
 @app.route('/start_game/<play_num>', methods=['GET', 'POST'])
 def start_game(play_num):
-    flash(f"[Session] {session}")
+    # TODO Require Login for future token charge system
+    # login_required()
+    # if session['user_name'] == 'default':
+    #     return redirect(url_for('home'))
+
     print("redirected to /start_game")
-
     dice_num = []
-
     play_num = int(play_num)
+
     for num in range(play_num):
         rand_num = random.randint(1, 6)
         dice_num.append(rand_num)
     # Sum randomly generated numbers
     dice_sum = sum(dice_num)
 
-    session['dice_num'] = dice_num
-    session['dice_sum'] = dice_sum
+    if session['dice_sum'] == 0:  # if initial value (Triggers only once)
+        print(f"Saved dice values into session: {dice_num}, {dice_sum}")
+        session['dice_num'] = dice_num
+        session['dice_sum'] = dice_sum
 
     if request.method == 'POST':
         if 'submit_name' in request.form:
             u_name = request.form.get('user_name', None)
-            print(f"[USER NAME] {u_name}")
 
-            # TODO Write data in Database
             if not u_name:
                 print("User name is empty !")
-                return redirect()
+                flash("[ERROR] Type in valid 'User Name' !")
+                return render_template('play_game.html', plays=session['play_num'],
+                                       dice_num=session['dice_num'],
+                                       sum=session['dice_sum'])
             else:
+                print(f"[USER NAME] {u_name}")
                 return redirect(url_for('score_board', user_name=u_name))
 
     return render_template('play_game.html', plays=play_num, dice_num=dice_num, sum=dice_sum)
@@ -86,9 +106,10 @@ def score_board(user_name=None):
     :param user_name: Name received from user in play_game.html
     :return:
     """
-    flash(f"[Session] {session}")
+    print(f"[Session] {session}")
     print(f"redirected to /score_board/{user_name}")
-    return render_template('score_board.html', user_name=user_name)
+    return render_template('score_board.html', user_name=user_name,
+                           score=session['dice_sum'])
 
 
 if __name__ == '__main__':
