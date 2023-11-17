@@ -4,6 +4,8 @@
 
 {% block description %}
 
-<h3> Score of {{ user_name }}: {{ score }} </h3>
+<h3> Score of {{ user_name }}: {{ score }} points  </h3>
+
+{{ html_df | safe }}
 
 {% endblock %}

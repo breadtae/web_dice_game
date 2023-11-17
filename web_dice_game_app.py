@@ -1,14 +1,16 @@
+import pandas as pd
 from flask import Flask, render_template, redirect, url_for, \
     request, flash, session
 
 import random
-from flask import jsonify
+import re
+from score_board import (load_db, save_db, add_score, gen_html)
 
-import logging
 
 app = Flask(__name__)
 app.secret_key = "AA"
 app.debug = True
+html_text = re.compile(r'^"(.*)"$')
 
 
 def reset_session():
@@ -89,11 +91,6 @@ def start_game(play_num):
     return render_template('play_game.html', plays=play_num, dice_num=dice_num, sum=dice_sum)
 
 
-# TODO
-def write_db(user_name:str, score:int):
-    pass
-
-
 @app.route('/score_board/<user_name>', methods=['GET'])
 def score_board(user_name=None):
     """
@@ -108,8 +105,21 @@ def score_board(user_name=None):
     """
     print(f"[Session] {session}")
     print(f"redirected to /score_board/{user_name}")
-    return render_template('score_board.html', user_name=user_name,
-                           score=session['dice_sum'])
+
+    # Generate DB and show DB
+    score_data = load_db()
+    html_df = None
+
+    if score := session['dice_sum']:
+        # TODO Think about case of user_name is None (w/o playing game)
+        score_data = add_score(score_data, user_name.upper().strip(), score)
+        save_db(score_data)
+        # Change dataframe into HTML Table
+        html_df = gen_html(score_data)
+    else: # Direct access from index.html
+        pass
+
+    return render_template('score_board.html', user_name=user_name, score=session['dice_sum'], html_df=html_df)
 
 
 if __name__ == '__main__':
