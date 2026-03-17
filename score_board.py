@@ -1,4 +1,3 @@
-import pandas
 import pandas as pd
 import logging
 import os
@@ -22,22 +21,15 @@ logger.addHandler(stream_handler)
 
 [Stores]
 - dataframe of scoreboard
-     rank | name  | score |
-        1 |  tae  | 18    |
-        1 |  min  | 18    |
-        2 |  joe  |  3    |
+     rank | name  | score | dice_count |
+        1 |  TAE  | 18    | 3          |
+        1 |  MIN  | 18    | 3          |
+        2 |  JOE  |  3    | 1          |
 """
 
 
 MAX_USERS_NUM = 10
 db_file_name = 'score.json'
-
-sample_score_1 = {'name': 'tae', 'score': '18'}
-sample_score_2 = {'name': 'joe', 'score': '3'}
-sample_score_3 = {'name': 'joe', 'score': '4'}
-sample_score_4 = {'name': 'joe', 'score': '3'}
-
-df_data = pd.DataFrame([sample_score_1, sample_score_2, sample_score_3, sample_score_4])
 
 
 def load_db():
@@ -49,82 +41,54 @@ def load_db():
         return pd.DataFrame()
 
 
-def save_db(df: pandas.DataFrame):
+def save_db(df: pd.DataFrame):
     df.to_json(db_file_name)
     logger.info(f'saved db to {db_file_name}')
 
 
-def add_score(df: pandas.DataFrame, name: str, score: int or str):
-    row = {'name': name, 'score': score}
+def add_score(df: pd.DataFrame, name: str, score: int, dice_count: int = 1):
+    row = {'name': name, 'score': score, 'dice_count': dice_count}
     logger.debug(f'[new data]\n {row}')
 
-    # Add data
-    merged_df = pd.concat([df, pd.DataFrame(row, index=[0])])
-    # Sort data
+    merged_df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
     sorted_df = sort_rank(merged_df)
-    # Trim data
     trimmed_df = drop_losers(sorted_df)
-    drop_same_record(trimmed_df)
-    # Add Rank column
+    trimmed_df = drop_same_name(trimmed_df)
     ranked_df = add_rank_column(trimmed_df)
 
     logger.info(f'[data]\n{ranked_df}')
     return ranked_df
 
 
-def sort_rank(df: pandas.DataFrame):
+def sort_rank(df: pd.DataFrame):
+    df = df.copy()
     df = df.astype({'score': 'int'})
-    sorted_df = df.sort_values(by='score', axis=0, ascending=False)
-    reset_index(sorted_df)
-    return sorted_df
+    return df.sort_values(by='score', ascending=False).reset_index(drop=True)
 
 
-def add_rank_column(df: pandas.DataFrame):
-    df['rank'] = range(1, len(df.index)+1)
-    df = df[['rank', 'name', 'score']]
-    return df
+def add_rank_column(df: pd.DataFrame):
+    """Handles ties: same score = same rank."""
+    df = df.copy()
+    df['rank'] = df['score'].rank(method='min', ascending=False).astype(int)
+    cols = ['rank', 'name', 'score']
+    if 'dice_count' in df.columns:
+        cols.append('dice_count')
+    return df[cols]
 
 
-def reset_index(df: pandas.DataFrame):
-    df.reset_index(inplace=True, drop=True)
-    return
-
-
-def drop_losers(df: pandas.DataFrame):
+def drop_losers(df: pd.DataFrame):
     logger.debug(f'dropped rows more than {MAX_USERS_NUM}')
-    return df.loc[0:MAX_USERS_NUM-1, :]
+    return df.iloc[:MAX_USERS_NUM].reset_index(drop=True)
 
 
-def drop_same_record(df: pandas.DataFrame):
-    logger.debug(f'dropped overlapping rows')
-    # return df.drop_duplicates(['name', 'score'], inplace=True)
-    return df.drop_duplicates(['name'], inplace=True)
+def drop_same_name(df: pd.DataFrame):
+    """Keep only the best score per player name."""
+    logger.debug('dropped overlapping rows (keep best score per name)')
+    return df.drop_duplicates(subset=['name'], keep='first').reset_index(drop=True)
 
 
-def gen_html(df: pandas.DataFrame):
-    logger.info('generated html_df')
-    return df.to_html(index=False, render_links=False)
-
-
-def compare_score(df: pandas.DataFrame, score:int):
-    # New High score
-    # Not in ranking board
-    pass
-############################################################################
-
-if __name__ == '__main__':
-    save_db(df_data)
-
-    df_data = add_score(df=df_data, name='kim', score=5)
-    df_data = add_score(df=df_data, name='kim1', score=17)
-    df_data = add_score(df=df_data, name='kim2', score=8)
-    df_data = add_score(df=df_data, name='kim3', score=12)
-    print('added\n', df_data)
-
-    df_data = sort_rank(df_data)
-    print('sorted\n', df_data)
-
-    df_data = drop_losers(df_data)
-
-    drop_same_record(df_data)
-    print('dropped overlapping\n', df_data)
+def to_records(df: pd.DataFrame) -> list:
+    """Return score data as a list of dicts for template rendering."""
+    if df.empty:
+        return []
+    return df.to_dict('records')

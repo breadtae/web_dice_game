@@ -1,34 +1,48 @@
 {% extends 'base.html' %}
 
-{% block title %} Home {% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block description %}
+<div class="card">
+    <h2 class="card-title">주사위 게임에 오신 걸 환영합니다!</h2>
+    <div class="rules">
+        <h4>게임 방법</h4>
+        <ol>
+            <li>굴릴 주사위 개수를 선택하세요.</li>
+            <li>'게임 시작' 버튼을 눌러 주사위를 굴리세요.</li>
+            <li>결과를 확인하고 이름을 입력해 점수판에 등록하세요.</li>
+        </ol>
+    </div>
 
-<div class="rules">
-    <h4>Rules to play dice games:</h4>
-    <ol>
-        <li>Select a number to play.</li>
-        <li>Click 'play' button to roll a dice.</li>
-    </ol>
-</div>
-<br>
-
-
-<div class="game_screen">
-    <form method="post">
-        <h4>Select the number of turns to play</h4>
-            <div class="play_num">
-                <input name="play_num" type="radio" value="1"> Single
-                <input name="play_num" type="radio" value="2"> Double
-                <input name="play_num" type="radio" value="3"> Triple
-            </div>
-        <div class="dice_img"> <img src="{{ url_for('static',filename='images/dice.png') }}"
-                 width="100px" height="100px"> </div>
-
-        <input type="submit" name="play_game" value="Play Game !">
-
+    <form method="post" class="game-form">
+        <h4>주사위 개수 선택</h4>
+        <div class="radio-group">
+            <label class="radio-card">
+                <input name="play_num" type="radio" value="1">
+                <span class="radio-label">
+                    <img src="{{ url_for('static', filename='images/dice.png') }}" alt="dice" class="dice-icon">
+                    <strong>1개</strong>
+                </span>
+            </label>
+            <label class="radio-card">
+                <input name="play_num" type="radio" value="2">
+                <span class="radio-label">
+                    <img src="{{ url_for('static', filename='images/dice.png') }}" alt="dice" class="dice-icon">
+                    <img src="{{ url_for('static', filename='images/dice.png') }}" alt="dice" class="dice-icon">
+                    <strong>2개</strong>
+                </span>
+            </label>
+            <label class="radio-card">
+                <input name="play_num" type="radio" value="3">
+                <span class="radio-label">
+                    <img src="{{ url_for('static', filename='images/dice.png') }}" alt="dice" class="dice-icon">
+                    <img src="{{ url_for('static', filename='images/dice.png') }}" alt="dice" class="dice-icon">
+                    <img src="{{ url_for('static', filename='images/dice.png') }}" alt="dice" class="dice-icon">
+                    <strong>3개</strong>
+                </span>
+            </label>
+        </div>
+        <button type="submit" name="play_game" class="btn btn-primary">🎲 게임 시작!</button>
     </form>
 </div>
-
-
 {% endblock %}

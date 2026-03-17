@@ -1,32 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
-    <title>{% block title %} <Title Here> {% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}Web Dice Game{% endblock %} | Dice Game</title>
 </head>
 <body>
-    <div class="head_line">
-        <hr class="deco_line">
-        <h2>Web-Dice-Game Page</h2>
-        <a href="{{url_for('home')}}"> HOME </a>
-        <hr class="deco_line">
-    </div>
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 class="site-title">🎲 Web Dice Game</h1>
+            <nav>
+                <a class="nav-link" href="{{ url_for('home') }}">HOME</a>
+            </nav>
+        </div>
+    </header>
 
     {% with messages = get_flashed_messages() %}
-    {% for message in messages %}
-        <hr>
-        <ul> <li> {{ message }} </li> </ul>
-        <hr>
-    {% endfor %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for message in messages %}
+                    <div class="flash-msg">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
     {% endwith %}
 
+    <main class="main-content">
+        {% block description %}{% endblock %}
+    </main>
 
-    {% block description %}
-    {% endblock %}
-
-
-
-
+    <footer class="site-footer">
+        <p>Tae's Toy Project &mdash; Web Dice Game</p>
+    </footer>
 </body>
 </html>

@@ -1,3 +1,362 @@
-.dice_img img{
-    width="20px" height="80px"
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== Header ===== */
+.site-header {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 2rem;
+}
+
+.header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.site-title {
+    font-size: 1.5rem;
+    color: #f0c040;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    color: #a0c4ff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid #a0c4ff;
+    border-radius: 20px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: #a0c4ff;
+    color: #1a1a2e;
+}
+
+/* ===== Flash Messages ===== */
+.flash-container {
+    max-width: 800px;
+    margin: 1rem auto 0;
+    padding: 0 1rem;
+}
+
+.flash-msg {
+    background: rgba(255, 80, 80, 0.2);
+    border: 1px solid rgba(255, 80, 80, 0.5);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #ff9090;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+    flex: 1;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+/* ===== Card ===== */
+.card {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.card-title {
+    font-size: 1.6rem;
+    color: #f0c040;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* ===== Rules ===== */
+.rules {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.rules h4 {
+    color: #a0c4ff;
+    margin-bottom: 0.5rem;
+}
+
+.rules ol {
+    padding-left: 1.2rem;
+    line-height: 1.9;
+    color: #c0c0c0;
+}
+
+/* ===== Game Form (index) ===== */
+.game-form h4 {
+    color: #a0c4ff;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.radio-card {
+    cursor: pointer;
+}
+
+.radio-card input[type="radio"] {
+    display: none;
+}
+
+.radio-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 1rem 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
+    min-width: 90px;
+}
+
+.radio-card input[type="radio"]:checked + .radio-label {
+    border-color: #f0c040;
+    background: rgba(240, 192, 64, 0.15);
+    transform: scale(1.05);
+}
+
+.radio-label:hover {
+    border-color: rgba(240, 192, 64, 0.6);
+    background: rgba(240, 192, 64, 0.08);
+}
+
+.dice-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+/* ===== Buttons ===== */
+.btn {
+    display: inline-block;
+    padding: 0.65rem 1.6rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+    background: linear-gradient(135deg, #f0c040, #e07b00);
+    color: #1a1a2e;
+    box-shadow: 0 4px 14px rgba(240, 192, 64, 0.35);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(240, 192, 64, 0.55);
+    opacity: 0.95;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* ===== Dice Results (play_game) ===== */
+.dice-results {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.dice-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.dice-label {
+    font-size: 0.8rem;
+    color: #a0c4ff;
+}
+
+.dice-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    animation: rollIn 0.4s ease-out;
+}
+
+@keyframes rollIn {
+    from { transform: rotate(-30deg) scale(0.7); opacity: 0; }
+    to   { transform: rotate(0deg) scale(1);    opacity: 1; }
+}
+
+.dice-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #f0c040;
+}
+
+/* ===== Score Summary ===== */
+.score-summary {
+    text-align: center;
+    margin: 1rem 0 1.5rem;
+    font-size: 1.3rem;
+}
+
+.score-label { color: #a0c4ff; margin: 0 0.3rem; }
+.score-value { font-size: 2.2rem; font-weight: 800; color: #f0c040; }
+
+/* ===== Name Form ===== */
+.name-form {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.6rem;
+    color: #c0c0c0;
+    font-size: 0.95rem;
+}
+
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.form-input {
+    flex: 1;
+    padding: 0.65rem 1rem;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: #e0e0e0;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: #f0c040;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.form-input::placeholder { color: rgba(255,255,255,0.3); }
+
+/* ===== Score Board ===== */
+.my-score-banner {
+    text-align: center;
+    background: rgba(240, 192, 64, 0.15);
+    border: 1px solid rgba(240, 192, 64, 0.4);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.my-score-value {
+    font-size: 1.6rem;
+    color: #f0c040;
+    margin-left: 0.5rem;
+}
+
+.score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.score-table th {
+    background: rgba(160, 196, 255, 0.15);
+    color: #a0c4ff;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.score-table td {
+    padding: 0.7rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: #d0d0d0;
+}
+
+.score-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.highlight-row td {
+    background: rgba(240, 192, 64, 0.12) !important;
+    color: #f0c040 !important;
+    font-weight: 700;
+}
+
+.rank-cell { font-size: 1.2rem; }
+.score-cell { font-weight: 700; color: #e0e0e0; }
+.dice-count-cell { color: #a0a0a0; font-size: 0.9rem; }
+
+.empty-msg {
+    text-align: center;
+    color: #a0a0a0;
+    padding: 2rem;
+}
+
+.action-buttons {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* ===== Footer ===== */
+.site-footer {
+    text-align: center;
+    padding: 1rem;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }

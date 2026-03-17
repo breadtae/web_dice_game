@@ -1,11 +1,51 @@
 {% extends 'base.html' %}
 
-{% block title %} Score Board {% endblock %}
+{% block title %}점수판{% endblock %}
 
 {% block description %}
+<div class="card">
+    <h2 class="card-title">🏆 점수판</h2>
 
-<h3> Score of {{ user_name }}: {{ score }} points  </h3>
+    {% if score %}
+    <div class="my-score-banner">
+        <span>{{ user_name }}의 점수:</span>
+        <strong class="my-score-value">{{ score }}점</strong>
+    </div>
+    {% endif %}
 
-{{ html_df | safe }}
+    {% if records %}
+    <table class="score-table">
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>이름</th>
+                <th>점수</th>
+                <th>주사위</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in records %}
+            <tr class="{% if row.name == user_name %}highlight-row{% endif %}">
+                <td class="rank-cell">
+                    {% if row.rank == 1 %}🥇
+                    {% elif row.rank == 2 %}🥈
+                    {% elif row.rank == 3 %}🥉
+                    {% else %}{{ row.rank }}
+                    {% endif %}
+                </td>
+                <td>{{ row.name }}</td>
+                <td class="score-cell">{{ row.score }}</td>
+                <td class="dice-count-cell">{{ row.dice_count if row.dice_count else '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty-msg">아직 등록된 점수가 없습니다.</p>
+    {% endif %}
 
+    <div class="action-buttons">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">🎲 다시 하기</a>
+    </div>
+</div>
 {% endblock %}

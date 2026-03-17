@@ -1,36 +1,38 @@
 {% extends 'base.html' %}
 
-{% block title %} Play Game ! {% endblock %}
+{% block title %}주사위 결과{% endblock %}
 
 {% block description %}
+<div class="card">
+    <h2 class="card-title">🎲 주사위 결과</h2>
 
-<div class="dice_img"> <ul>
-    {% for num in range(plays) %}
-    <li>
-        Play {{ num + 1 }} : <br>
-        {% if dice_num[num] == 1 %}
-            <img src="{{url_for('static', filename='images/dice_1.jpg')}}">
-        {% elif dice_num[num] == 2 %}
-            <img src="{{url_for('static', filename='images/dice_2.jpg')}}">
-        {% elif dice_num[num] == 3 %}
-            <img src="{{url_for('static', filename='images/dice_3.jpg')}}">
-        {% elif dice_num[num] == 4 %}
-            <img src="{{url_for('static', filename='images/dice_4.jpg')}}">
-        {% elif dice_num[num] == 5 %}
-            <img src="{{url_for('static', filename='images/dice_5.jpg')}}">
-        {% elif dice_num[num] == 6 %}
-            <img src="{{url_for('static', filename='images/dice_6.jpg')}}">
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul></div>
+    <div class="dice-results">
+        {% for num in range(plays) %}
+        <div class="dice-item">
+            <p class="dice-label">{{ loop.index }}번째 주사위</p>
+            <img class="dice-img" src="{{ url_for('static', filename='images/dice_' ~ dice_num[loop.index0] ~ '.jpg') }}"
+                 alt="주사위 {{ dice_num[loop.index0] }}">
+            <p class="dice-value">{{ dice_num[loop.index0] }}</p>
+        </div>
+        {% endfor %}
+    </div>
 
-<h4>* Sum: {{ sum }}</h4>
+    <div class="score-summary">
+        <span class="score-label">합계</span>
+        <span class="score-value">{{ dice_sum }}</span>
+        <span class="score-label">점</span>
+    </div>
 
-<form method="post">
-    <label for="user_name">User Name: </label>
-    <input type="text" id="user_name" name="user_name">
-    <input type="submit" name="submit_name" value="SUBMIT">
-</form>
+    <form method="post" class="name-form">
+        <label for="user_name" class="form-label">이름을 입력하고 점수판에 등록하세요</label>
+        <div class="input-group">
+            <input type="text" id="user_name" name="user_name"
+                   class="form-input" placeholder="이름 입력..."
+                   maxlength="20" autocomplete="off">
+            <button type="submit" name="submit_name" class="btn btn-primary">등록</button>
+        </div>
+    </form>
 
+    <a href="{{ url_for('home') }}" class="btn btn-secondary">다시 하기</a>
+</div>
 {% endblock %}
